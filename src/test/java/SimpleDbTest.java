@@ -67,4 +67,8 @@ public class SimpleDbTest {
         }
     }
 
+    // sprawdzic, czy uda sie dodac jeden nowy wpis do tabeli
+    // sprawdzic, czy uda sie usunac jeden wpis z tabeli
+    // sprawdzic, czy po dodaniu jednego wpisu i usunieciu jednego wpisu nadal w tabeli sa trzy wpisy
+    // sprawdzic, czy po dodaniu wpisu z wartoscia 10.0 maksymalna wyciagnieta wartosc (podpowiedz: SELECT MAX(NUM) ...) wynosi 10.0)
 }
