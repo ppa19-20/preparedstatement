@@ -71,4 +71,47 @@ public class SimpleDbTest {
     // sprawdzic, czy uda sie usunac jeden wpis z tabeli
     // sprawdzic, czy po dodaniu jednego wpisu i usunieciu jednego wpisu nadal w tabeli sa trzy wpisy
     // sprawdzic, czy po dodaniu wpisu z wartoscia 10.0 maksymalna wyciagnieta wartosc (podpowiedz: SELECT MAX(NUM) ...) wynosi 10.0)
+
+    @Test
+    public void testTransactionRollback() {
+        try (Connection c = getConnection(DBDESC, "SA", "")) {
+            c.setAutoCommit(false);
+            c.createStatement().execute("DELETE FROM TESTING WHERE ID=1");
+            c.createStatement().execute("DELETE FROM TESTING WHERE ID=2");
+            try (ResultSet rs = c.createStatement().executeQuery("SELECT COUNT(*) AS CNT FROM TESTING")) {
+                rs.next();
+                Assertions.assertEquals(rs.getInt("CNT"), 1);
+            }
+            c.rollback();
+            try (ResultSet rs = c.createStatement().executeQuery("SELECT COUNT(*) AS CNT FROM TESTING")) {
+                rs.next();
+                Assertions.assertEquals(rs.getInt("CNT"), 3);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void testTransactionCommit() {
+        try (Connection c = getConnection(DBDESC, "SA", "")) {
+            c.setAutoCommit(false);
+            c.createStatement().execute("DELETE FROM TESTING WHERE ID=1");
+            c.createStatement().execute("DELETE FROM TESTING WHERE ID=2");
+            try (ResultSet rs = c.createStatement().executeQuery("SELECT COUNT(*) AS CNT FROM TESTING")) {
+                rs.next();
+                Assertions.assertEquals(rs.getInt("CNT"), 1);
+            }
+            c.commit();
+            try (ResultSet rs = c.createStatement().executeQuery("SELECT COUNT(*) AS CNT FROM TESTING")) {
+                rs.next();
+                Assertions.assertEquals(rs.getInt("CNT"), 1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ACID
+
 }
