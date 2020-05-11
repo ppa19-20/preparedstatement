@@ -1,3 +1,5 @@
+package database;
+
 import java.sql.*;
 
 /**
@@ -6,6 +8,10 @@ import java.sql.*;
 public class DatabaseLogic {
 
     public static final String DB_LOCATION = "jdbc:hsqldb:file:C:\\devel\\ppa\\prepst";
+
+    public static interface RunnableWithConnection {
+        public void run(Connection c) throws SQLException;
+    }
 
     public String performTests() {
         try (Connection c = DriverManager.getConnection(DB_LOCATION, "SA", "")) {
@@ -36,5 +42,14 @@ public class DatabaseLogic {
             throw new RuntimeException(e);
         }
     }
+
+    public void runWithConnection(RunnableWithConnection rc) {
+        try (Connection c = DriverManager.getConnection(DB_LOCATION, "SA", "")) {
+            rc.run(c);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
